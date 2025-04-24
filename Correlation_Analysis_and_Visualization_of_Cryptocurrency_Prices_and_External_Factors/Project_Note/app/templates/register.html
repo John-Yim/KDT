@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-md mx-auto bg-gray-800 p-8 rounded-xl shadow-md text-white">
+  <h2 class="text-2xl font-bold mb-6 text-center">📝 회원가입</h2>
+
+  <!-- ✅ flash 메시지 출력 -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="mb-4 space-y-2">
+        {% for category, message in messages %}
+          <div class="px-4 py-2 rounded text-sm bg-red-600" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" class="space-y-4" novalidate>
+    <div>
+      <label for="email" class="block text-sm mb-1">이메일</label>
+      <input type="email" name="email" required
+             class="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none">
+    </div>
+
+    <div>
+      <label for="nickname" class="block text-sm mb-1">닉네임</label>
+      <input type="text" name="nickname" required
+             class="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none">
+    </div>
+
+    <div>
+      <label for="password" class="block text-sm mb-1">비밀번호</label>
+      <input type="password" name="password" required
+             class="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none">
+      <p class="text-sm text-gray-400 mt-1">※ 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다.</p>
+    </div>
+
+    <button type="submit"
+            class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-semibold">
+      가입하기
+    </button>
+  </form>
+
+  <p class="text-center text-gray-400 mt-6">
+    이미 계정이 있으신가요?
+    <a href="{{ url_for('auth_bp.login') }}" class="text-blue-400 hover:underline">로그인</a>
+  </p>
+</div>
+{% endblock %}

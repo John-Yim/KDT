@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="w-full px-4 md:px-8 lg:px-16">
+  <section class="bg-gray-800 rounded-xl p-10 shadow-md mb-10 text-white max-w-3xl mx-auto text-center">
+    <h2 class="text-3xl font-bold mb-4">📬 민원 분류 및 부처 안내</h2>
+    <p class="text-gray-400 mb-6">민원 내용을 입력하면 카테고리를 분류하고 담당 부처 정보를 제공합니다.</p>
+
+    <!-- 고정 썸네일 -->
+    <div class="flex justify-center mb-6">
+      <img src="{{ url_for('static', filename=project.project_image_path) }}"
+           alt="민원 썸네일"
+           class="w-full max-w-md h-auto rounded-xl border-2 border-gray-600 shadow-md">
+    </div>
+
+    <!-- 입력 폼 -->
+    <form method="POST" class="flex flex-col space-y-4 items-center">
+      <textarea name="complaint" rows="4" maxlength="500" placeholder="민원 내용을 입력하세요"
+                class="w-full max-w-xl px-4 py-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none"
+                required>{{ request.form.complaint.strip() if request.method == 'POST' else '' }}</textarea>
+
+      <button type="submit"
+              class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">
+        예측 실행
+      </button>
+    </form>
+
+    {% if result %}
+    <div class="mt-10 bg-gray-700 p-6 rounded-lg shadow-inner text-left">
+      <h3 class="text-xl font-bold text-green-400">✅ 예측된 카테고리</h3>
+      <p class="text-white text-lg mt-1 mb-4">「{{ result.category }}」</p>
+
+      {% if gov_info %}
+      <h3 class="text-xl font-bold text-blue-400">🏢 담당 부처 정보</h3>
+      <ul class="mt-2 text-gray-300">
+        <li><strong>부처명:</strong> {{ gov_info.gov_name }}</li>
+        <li><strong>공식 홈페이지:</strong>
+          <a href="{{ gov_info.gov_url }}" target="_blank" class="text-blue-400 underline hover:text-blue-200">
+            {{ gov_info.gov_url }}
+          </a>
+        </li>
+        <li><strong>대표 연락처:</strong> {{ gov_info.gov_contact }}</li>
+      </ul>
+      {% else %}
+      <p class="text-red-400 mt-4">해당 부처 정보를 찾을 수 없습니다.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

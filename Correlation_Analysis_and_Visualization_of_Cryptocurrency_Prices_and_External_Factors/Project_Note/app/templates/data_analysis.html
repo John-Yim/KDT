@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}데이터 통계 분석 | Project Note{% endblock %}
+
+{% block extra_head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<main class="px-4 md:px-8 lg:px-16 py-8">
+  <!-- 1) 데이터셋 구조 -->
+  <div class="mb-8">
+    <div class="p-4 bg-white rounded shadow overflow-x-auto text-gray-800">
+      {{ content|safe }}
+    </div>
+  </div>
+
+  <!-- 2) 구조 / 시각화 토글 버튼 -->
+  <div class="mb-4 flex space-x-4">
+    <button id="btnStructure"
+            class="toggle-btn bg-blue-600 text-white px-4 py-2 rounded w-1/2">
+      데이터셋 구조 보기 ▼
+    </button>
+    <button id="btnViz"
+            class="toggle-btn bg-blue-600 text-white px-4 py-2 rounded w-1/2">
+      데이터셋 시각화 ▼
+    </button>
+  </div>
+  <div id="toggleSection" class="mb-8" style="display:none"></div>
+
+  <!-- 3) 전처리 설명 -->
+  <div class="mb-8">
+    <div class="p-4 bg-white rounded shadow overflow-x-auto text-gray-800">
+      {{ content2|safe }}
+    </div>
+  </div>
+
+  <!-- 4) 전처리 차트 토글 -->
+  <div class="mb-4">
+    <button id="btnPreprocViz"
+            class="toggle-btn bg-blue-600 text-white px-4 py-2 rounded w-full">
+      전처리 데이터 시각화 ▼
+    </button>
+  </div>
+  <!-- ★ 이 부분은 ‘정적’으로 미리 넣어둡니다. -->
+  <div id="preprocVizSection" style="display:none">
+    <!-- 날짜 선택 -->
+    <p class="mb-2 font-semibold">날짜 선택 (2023-01-01 ~ 2025-01-31):</p>
+    <div class="flex space-x-4 mb-4">
+      <label>From:
+        <input type="date" id="preprocFromDate"
+               value="2023-01-01" min="2023-01-01" max="2025-01-31"
+               class="border border-gray-600 rounded px-2 py-1 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-teal-400">
+      </label>
+      <label>To:
+        <input type="date" id="preprocToDate"
+               value="2025-01-31" min="2023-01-01" max="2025-01-31"
+               class="border border-gray-600 rounded px-2 py-1 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-teal-400">
+      </label>
+    </div>
+
+    <!-- 컬럼 체크박스 -->
+    <p class="mb-2 font-semibold">선택할 컬럼 (여러 개 선택 가능):</p>
+    <div class="flex flex-wrap gap-4 mb-4">
+      <label><input type="checkbox" name="preprocColumns" value="btc_price"> btc_price</label>
+      <label><input type="checkbox" name="preprocColumns" value="eth_price"> eth_price</label>
+      <label><input type="checkbox" name="preprocColumns" value="doge_price"> doge_price</label>
+      <label><input type="checkbox" name="preprocColumns" value="kospi"> kospi</label>
+      <label><input type="checkbox" name="preprocColumns" value="nasdaq"> nasdaq</label>
+      <label><input type="checkbox" name="preprocColumns" value="kor_rate"> kor_rate</label>
+      <label><input type="checkbox" name="preprocColumns" value="usa_rate"> usa_rate</label>
+      <label><input type="checkbox" name="preprocColumns" value="moon_phase"> moon_phase</label>
+    </div>
+
+    <!-- 범례 안내 -->
+    <div id="weatherMarkerGuide" class="mb-4"></div>
+
+    <!-- 차트 캔버스: 세로 배치, 고정 높이 -->
+    <div class="mb-8 chart-card bg-white p-4 rounded shadow">
+      <div class="mb-2 font-semibold">데이터 그래프</div>
+      <canvas id="preprocChartRaw" style="height:300px; width:100%;"></canvas>
+    </div>
+    <div class="chart-card bg-white p-4 rounded shadow">
+      <div class="mb-2 font-semibold">정규화 그래프</div>
+      <canvas id="preprocChartNorm" style="height:300px; width:100%;"></canvas>
+    </div>
+  </div>
+
+  <!-- 5) 상관관계분석 -->
+  <div class="mt-8 mb-8">
+    <div class="p-4 bg-white rounded shadow overflow-x-auto text-gray-800">
+      {{ content3|safe }}
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{{ url_for('static', filename='js/data_analysis.js') }}"></script>
+{% endblock %}

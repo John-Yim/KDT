@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="w-full px-4 md:px-8 lg:px-16">
+    <!-- 인트로 섹션 -->
+    <section class="bg-gray-800 rounded-xl p-10 shadow-md mb-10 text-white">
+      <div class="flex flex-col md:flex-row items-center gap-10">
+        <div class="md:w-1/2 flex justify-center">
+          <img src="{{ url_for('static', filename='images/hero.png') }}" alt="아이콘" class="w-full max-w-xs object-contain">
+        </div>
+        <div class="md:w-1/2 text-left">
+          <h2 class="text-4xl font-extrabold mb-4 leading-snug">
+            다양한 AI 프로젝트를 직접 실행해보고<br>결과를 체험해보세요.
+          </h2>
+          <p class="text-lg text-gray-300">
+            프로젝트 실행을 위한 간단한 데모 웹사이트 <strong>Project Note</strong>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 카드 영역 -->
+    <section class="bg-gray-800 rounded-xl p-10 shadow-inner w-full">
+      {% if projects %}
+        <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-6">
+          {% for project in projects %}
+          <div class="bg-gray-700 rounded-2xl shadow-lg overflow-hidden flex flex-col">
+            <img src="{{ url_for('static', filename=project.project_image_path) }}" alt="썸네일" class="w-full h-64 object-cover">
+            <div class="p-5 flex flex-col justify-between h-full space-y-3">
+              <h2 class="text-xl font-semibold text-white">{{ project.project_title }}</h2>
+              <div class="flex justify-between items-center pt-3">
+                <!-- 왼쪽: 실행하기 -->
+                {% if project.project_model_path %}
+                  <a href="{{ url_for('main_bp.view_demo', project_id=project.project_id) }}"
+                     class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm">
+                    실행하기
+                  </a>
+                {% else %}
+                  <div></div>
+                {% endif %}
+
+                <!-- 오른쪽: 상세보기 / 코드보기 -->
+                {% if project.project_title == "암호화폐와 경제/외부 요인의 상관관계 분석" %}
+                  <a href="{{ url_for('main_bp.data_analysis') }}"
+                     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm">
+                    상세보기
+                  </a>
+                {% elif project.project_html_path %}
+                  <a href="{{ url_for('main_bp.view_html', project_id=project.project_id) }}"
+                     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm">
+                    코드보기
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center text-gray-400 text-lg">
+          아직 등록된 프로젝트가 없습니다.
+        </div>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}

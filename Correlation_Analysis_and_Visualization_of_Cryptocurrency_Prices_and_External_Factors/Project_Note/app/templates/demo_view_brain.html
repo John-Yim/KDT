@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="w-full px-4 md:px-8 lg:px-16">
+  <section class="bg-gray-800 rounded-xl p-10 shadow-md mb-10 text-white text-center">
+    <h2 class="text-3xl font-bold mb-2">🧠 뇌종양 이미지 분류</h2>
+    <p class="text-gray-400 mb-6">MRI 이미지를 업로드하면 뇌종양의 유형을 예측합니다.</p>
+
+    <!-- 이미지 미리보기 -->
+    <div class="flex justify-center mb-6">
+      <img id="preview-image"
+           src="{{ uploaded_image if uploaded_image else url_for('static', filename=project.project_image_path) }}"
+           alt="이미지 미리보기"
+           class="w-full max-w-md h-auto rounded-xl border-2 border-gray-600 shadow-md">
+    </div>
+
+    <!-- 업로드 폼 -->
+    <form method="POST" enctype="multipart/form-data" class="flex flex-col items-center space-y-4" onsubmit="injectBase64()">
+      <input type="file" name="image" id="imageInput" accept="image/*"
+             onchange="previewImage(this)"
+             class="file:bg-purple-700 file:text-white file:px-4 file:py-2 file:rounded-lg file:border-none text-sm text-gray-300" required>
+
+      <!-- base64 데이터가 들어갈 hidden input -->
+      <input type="hidden" name="image_base64" id="imageBase64">
+
+      <button type="submit"
+              class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white font-semibold">
+        예측 실행
+      </button>
+    </form>
+
+    <!-- 예측 결과 -->
+    {% if prediction %}
+    <div class="mt-8 text-center">
+      <p class="text-xl font-bold text-green-400">🔍 예측 결과: {{ prediction }}</p>
+    </div>
+    {% endif %}
+  </section>
+</div>
+
+<script>
+let currentBase64 = "";
+
+function previewImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    currentBase64 = e.target.result;
+    document.getElementById('preview-image').src = currentBase64;
+  };
+  reader.readAsDataURL(file);
+}
+
+function injectBase64() {
+  if (currentBase64) {
+    document.getElementById('imageBase64').value = currentBase64;
+  }
+}
+</script>
+{% endblock %}
